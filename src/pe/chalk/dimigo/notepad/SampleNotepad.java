@@ -1,8 +1,13 @@
 package pe.chalk.dimigo.notepad;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
+import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,10 +28,8 @@ public class SampleNotepad extends JFrame {
     private Path openPath;
 
     private SampleNotepad(){
-        this.setSize(400, 600);
-        this.setTitle("Notepad");
+        this.setSize(400, 600); this.setTitle("Notepad");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         this.setLayout(new BorderLayout());
 
         this.openButton = new JButton("Open");
@@ -45,21 +48,18 @@ public class SampleNotepad extends JFrame {
 
     private void chooseFile(final ActionEvent event){
         final JFileChooser chooser = new JFileChooser();
-        if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION){
-            try{
-                this.openPath = chooser.getSelectedFile().toPath();
-                this.openButton.setText(this.openPath.getFileName().toString());
-                this.textArea.setText(String.join(System.lineSeparator(), Files.readAllLines(this.openPath, StandardCharsets.UTF_8)));
-            }catch(IOException ex){
-                ex.printStackTrace();
-            }
+        if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) try{
+            this.openPath = chooser.getSelectedFile().toPath();
+            this.openButton.setText(this.openPath.getFileName().toString());
+            this.textArea.setText(String.join(System.lineSeparator(), Files.readAllLines(this.openPath, StandardCharsets.UTF_8)));
+        }catch(IOException ex){
+            ex.printStackTrace();
         }
     }
 
     private void saveFile(final ActionEvent event){
         try{
-            if(this.openPath == null) return;
-            Files.write(this.openPath, this.textArea.toString().getBytes(StandardCharsets.UTF_8));
+            if(this.openPath != null) Files.write(this.openPath, this.textArea.getText().getBytes(StandardCharsets.UTF_8));
         }catch(IOException ex){
             ex.printStackTrace();
         }
